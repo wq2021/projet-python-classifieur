@@ -1,4 +1,4 @@
 # projet-python-classifieur
 
 ## image-test
-![testimage](image/test-image1.png)
+![testimage](images/test-image1.png)
