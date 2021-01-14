@@ -25,16 +25,18 @@ def filtre_stopwords(phrase):
     return phrase_out
 
 
-def nettoyage(ligne, lower=False):
-    
+def nettoyage(ligne):
+    # 0. tout en minuscule
+    ligne = str(ligne.lower())
+
     # 1. remplacer plus de deux points par un point de suspension
     ligne = re.sub(r"\.{2,}","…",ligne)
     
     # 2. remplacer les symboles d'HTML par leurs symboles généraux
-    ligne = re.sub(r"&quot;","\"",ligne)
-    ligne = re.sub(r"&amp;","&",ligne)
-    ligne = re.sub(r"&lt;","<",ligne)
-    ligne = re.sub(r"&gt;",">",ligne)
+    ligne = re.sub(r"&\s?quot\s?;","\"",ligne)
+    ligne = re.sub(r"&\s?amp\s?;","&",ligne)
+    ligne = re.sub(r"&\s?lt\s?;","<",ligne)
+    ligne = re.sub(r"&\s?gt\s?;",">",ligne)
     
     # 3 . supprimer des urls
     ligne = re.sub(r'http:/?/?.\S+',r'',ligne)
@@ -52,8 +54,9 @@ def nettoyage(ligne, lower=False):
     # 5. remplacer des emotions semi-textuels, par exemples: :des rires:, ::soupir::, etc.
     ligne = re.sub(r'\:{1,}(\w+\s?\w+?)\:{1,}',r'\1',ligne)
 
-    # 6. supprimer des ponctuations
+    # 6. supprimer des ponctuations et des chiffres
     ligne = re.sub(r"[+@#&%!?\|\"{\(\[|_\)\]},\.;/:§”“‘~`\*]", "", ligne)
+    ligne = re.sub(r"[0-9]+", "", ligne)
     
     # 7. supprimer des symboles spéciaux
     ligne = re.sub(r"♬|♪|♩|♫","",ligne)
@@ -61,14 +64,10 @@ def nettoyage(ligne, lower=False):
     # 8. la répétition d'une lettre ou des lettres
     # Exemple d'un tweet: Ça va être un loooooooooooooooooooooooooooooooonnnnnnngggggggg
     ligne = re.sub(r"((\w)\2{2,})",r"\2\2",ligne)
-    
-    # 9. mettre les mots en minuscule 
-    if lower:
-        ligne = ligne.lower()
     return ligne
     
-
 def corpus_separation():
+    #with open('sample_2000.csv','r',encoding="utf8") as entree:
     with open('french_tweets.csv','r',encoding="utf8") as entree:
         corpus_negatif = []
         corpus_positif = []
@@ -91,15 +90,19 @@ def corpus_separation():
         
         for (nombre,phrase) in enumerate(corpus_negatif, start=1):
             fichier = str(nombre) + str(".txt")
+            # sélectionner les 600000 premiers textes pour le train (qui prend environ 80% des données)
+            #if nombre < 1501:
             if nombre < 600001:
                 with open(os.path.join('/Users/wq/Desktop/TAL/M2/S1/Python/Projet_final/data/train/negatif',fichier),'w',encoding='utf8') as out:
                     out.write(phrase)
+            # les fichiers restants pour le test (qui prend environ 20% des données)
             else:
                 with open(os.path.join('/Users/wq/Desktop/TAL/M2/S1/Python/Projet_final/data/test/negatif',fichier),'w',encoding='utf8') as out:
                     out.write(phrase)
                 
         for (nombre,phrase) in enumerate(corpus_positif, start=1):
             fichier = str(nombre) + str(".txt")
+            #if nombre < 1501:
             if nombre < 600001:
                 with open(os.path.join('/Users/wq/Desktop/TAL/M2/S1/Python/Projet_final/data/train/positif',fichier),'w',encoding='utf8') as out:
                     out.write(phrase)
@@ -130,6 +133,6 @@ def load_datasets():
                 y[nom_type].append(label)
 
         print(" Le nombre de [{}] au total: {}\n".format(nom_type, len(X_data[nom_type])))
-    
     return X_data['train'], y['train'], X_data['test'], y['test']
+
 load_datasets()
