@@ -1,10 +1,22 @@
-import pandas as pd
-import matplotlib
-import matplotlib.pyplot as plt
-import numpy as np
+# import pandas as pd
+# import matplotlib
+# import matplotlib.pyplot as plt
+# import numpy as np
 import re 
+import sys
 
-def nettoyage(ligne):
+def importer_stopwords(nom_fic):
+    # assurer que le chemin relatif est par rapport au nettoyage.py donc marche n'importe où on lance le programme
+    chemin = sys.path[0]
+    fic = f"{chemin}/../ressources/{nom_fic}"
+
+    stopwords = set()
+    with open(fic, encoding="utf8") as f:
+        for ligne in f:
+            stopwords.add(ligne[:-1])
+    return stopwords
+
+def nettoyage(ligne, lower=False, stopword=None):
     ligne = str(ligne)
     
     # 1. remplacer plus de deux points par un point de suspension
@@ -40,6 +52,21 @@ def nettoyage(ligne):
 
     # 8. la répétition d'une lettre ou des lettres
     # Exemple d'un tweet: Ça va être un loooooooooooooooooooooooooooooooonnnnnnngggggggg
+    ligne = re.sub(r"((\w)\2{2,})",r"\2\2",ligne)
     
+    # 9. Traitement la casse et les stopwords selon parametres
+    if lower:
+        ligne = ligne.lower()
+    if stopword:
+        stopwords = importer_stopwords(stopword)
+        lst_tokens = ligne.split()
+        for token in lst_tokens:
+            if token in stopwords:
+                lst_tokens.remove(token)
+        ligne = " ".join(lst_tokens)
     return ligne
-nettoyage("http:www.bing.com oooups..., :des rires: quel :* red :o jour &amp; le travail http://www.bai.com !")
+
+expre= "http:www.bing.com oooups..., :des RIRES: quel :* red :o jour &amp; le travail http://www.bai.com !"
+# fic = "projet-python-classifieur/ressources/stopwords_fr.txt"
+
+print(nettoyage(expre,lower=True, stopword="stopwords_fr.txt"))
