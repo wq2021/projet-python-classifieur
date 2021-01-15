@@ -17,15 +17,13 @@ def importer_stopwords(nom_fic):
     # assurer que le chemin relatif est par rapport au nettoyage.py donc marche n'importe où on lance le programme
     # chemin = sys.path[0]
     fic = f"{path}/{nom_fic}"
-    # print(fic)
-
     stopwords = set()
     with open(fic, encoding="utf8") as f:
         for ligne in f:
             stopwords.add(ligne[:-1])
     return stopwords
 
-def nettoyage(ligne, lower=False, stopword=None):
+def nettoyage(ligne, set_stopwords, lower=False, stopword=False):
     """
         normalisation du texte tweet, renvoie la phrase après traitement; 
         cette fonction va supprimer les ponctuations, les symboles spéciaux et les urls, 
@@ -63,7 +61,7 @@ def nettoyage(ligne, lower=False, stopword=None):
     ligne = re.sub(r'\:{1,}(\w+\s?\w+?)\:{1,}',r'\1',ligne)
 
     # 6. supprimer des ponctuations et des chiffres
-    ligne = re.sub(r"[+@#&%!?\|\"{\(\[|_\)\]},\.;/:§”“‘~`\*]", "", ligne)
+    ligne = re.sub(r"[«+@#&%!?\|\"{\(\[|_\)\]},\.;/:§”“‘~`\*]", "", ligne)
     ligne = re.sub(r"[0-9]+", "", ligne)
     
     # 7. supprimer des symboles spéciaux
@@ -81,12 +79,13 @@ def nettoyage(ligne, lower=False, stopword=None):
     if lower:
         ligne = ligne.lower()
     if stopword:
-        stopwords = importer_stopwords(stopword)
+        stopwords = set_stopwords
+        new_lst_tokens = []
         lst_tokens = ligne.split()
         for token in lst_tokens:
-            if token in stopwords:
-                lst_tokens.remove(token)
-        ligne = " ".join(lst_tokens).strip()
+            if token not in stopwords:
+                new_lst_tokens.append(token)
+        ligne = " ".join(new_lst_tokens).strip()
 
     return ligne
 
@@ -94,10 +93,13 @@ def nettoyage(ligne, lower=False, stopword=None):
 def main():
     #exemple
     # path_de_fic_stopwords = "projet-python-classifieur/ressources/stopwords_fr.txt"
+    stopwords = importer_stopwords("stopwords_fr.txt")
     expre= "ne frequante pas http:www.bing.com ooooooups..., :des RIRES: quel :* red :o jour &amp; le travail http://www.bai.com !"
-    expre="presque terminé vêtements beaucoup tasses décorées pas encore finies toujours mon enveloppe serviettes toilette faisant tâches … yay la maison seule"
     print(f"Exemple avant la normalisation: \n {expre}\nAprès la normalisation:")  
-    print(nettoyage(expre, lower=True, stopword="stopwords_fr.txt"))
+    print(nettoyage(expre, stopwords, lower=True, stopword=True))
+
+    # set_stop = importer_stopwords("stopwords_fr.txt")
+    # print(set_stop)
 
 if __name__ == "__main__":
     main()
