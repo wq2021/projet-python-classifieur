@@ -19,6 +19,8 @@ L'objectif de notre projet consiste à réaliser une chaîne de traitement de cl
 
 ## Méthodologie
 
+Nous avons travaillé ensemble pour la rédaction de la documentation, aussi pour la création et le test du code. 
+
 La classification de textes basant sur Scikit-learn peut être divisée par les étapes suivantes : 
 
 - [1. Pré-traitement de données textuels](#1-Pré-traitement-de-données-textuels)
@@ -135,6 +137,113 @@ Au niveau des classifieurs, nous avons choisi :
 - `DecisionTreeClassifier()`: Decision Tree
 
 ## Résultats et discussions ##
+
+En consérant le volume important des données, nous avons décidé de sélectionner un échantillon de 200,000 tweets pour tester nos classifieurs. 
+
+En général, les classifieurs choisis ont eu un résultat assez bon, malgré le fait que les valeurs de F-mesure ne soient pas très satisfaisants.
+`TfidfVectorizer` est la meilleure en tant que la méthode d'extraction des features, par rapport à `CountVectorizer`.
+
+Voici les résultats que nous avons obtenus :
+
+
+### Méthode d'extraction des features de textes : `TfidfVectorizer` ###
+
+```
+Naive Bayes : MultinomialNB() tfidf
+              precision    recall  f1-score   support
+
+           0       0.77      0.73      0.75     32067
+           1       0.71      0.75      0.73     27933
+
+    accuracy                           0.74     60000
+   macro avg       0.74      0.74      0.74     60000
+weighted avg       0.74      0.74      0.74     60000
+```
+
+```
+Logistic Regression : LogisticRegression() tfidf
+              precision    recall  f1-score   support
+
+           0       0.74      0.77      0.75     29274
+           1       0.77      0.74      0.76     30726
+
+    accuracy                           0.76     60000
+   macro avg       0.76      0.76      0.76     60000
+weighted avg       0.76      0.76      0.76     60000
+```
+
+```
+SVM : SGDClassifier() tfidf
+              precision    recall  f1-score   support
+
+           0       0.70      0.78      0.74     27538
+           1       0.79      0.72      0.76     32462
+
+    accuracy                           0.75     60000
+   macro avg       0.75      0.75      0.75     60000
+weighted avg       0.75      0.75      0.75     60000
+```
+
+```
+Decision Tree : DecisionTreeClassifier() tfidf
+              precision    recall  f1-score   support
+
+           0       0.68      0.68      0.68     30327
+           1       0.67      0.67      0.67     29673
+
+    accuracy                           0.68     60000
+   macro avg       0.68      0.68      0.68     60000
+weighted avg       0.68      0.68      0.68     60000
+```
+
+### Méthode d'extraction des features de textes : `CountVectorizer` ###
+```
+Naive Bayes : MultinomialNB() countVectorizer
+              precision    recall  f1-score   support
+
+           0       0.77      0.74      0.75     31491
+           1       0.72      0.75      0.74     28509
+
+    accuracy                           0.74     60000
+   macro avg       0.74      0.74      0.74     60000
+weighted avg       0.74      0.74      0.74     60000
+```
+
+```
+Logistic Regression : LogisticRegression() countVectorizer
+              precision    recall  f1-score   support
+
+           0       0.73      0.76      0.75     29109
+           1       0.77      0.74      0.75     30891
+
+    accuracy                           0.75     60000
+   macro avg       0.75      0.75      0.75     60000
+weighted avg       0.75      0.75      0.75     60000
+```
+
+```
+SVM : SGDClassifier() countVectorizer
+              precision    recall  f1-score   support
+
+           0       0.71      0.78      0.75     27704
+           1       0.80      0.73      0.76     32296
+
+    accuracy                           0.75     60000
+   macro avg       0.75      0.76      0.75     60000
+weighted avg       0.76      0.75      0.75     60000
+```
+
+```
+Decision Tree : DecisionTreeClassifier() countVectorizer
+              precision    recall  f1-score   support
+
+           0       0.69      0.67      0.68     31298
+           1       0.65      0.67      0.66     28702
+
+    accuracy                           0.67     60000
+   macro avg       0.67      0.67      0.67     60000
+weighted avg       0.67      0.67      0.67     60000
+```
 
 
 ## Implémentation
