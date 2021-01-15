@@ -255,9 +255,9 @@ Decision Tree : DecisionTreeClassifier() countVectorizer
    macro avg       0.67      0.67      0.67     60000
 weighted avg       0.67      0.67      0.67     60000
 ```
-Pour l'amélioration des résultats, en premier lieu, nous espérons optimiser les hyperparamètres des classifieurs. Nous avons essayé de voir les hyperparamètres des classifieurs testés sur Scikit-learn, mais nous avons eu mal à comprendre et choisir un meilleur hyperparamètre. Grâce à un article concernant exactement la modification des hyperparamètres de classifieurs que nous avons choisis pour ce projet, nous avons pu tester et obtenir les performances pour quelques classifeurs ayant différents paramètres, mais cela n'est pas suffisant pour d'autres classifieurs.
+Pour l'amélioration des résultats, en premier lieu, nous espérons optimiser les hyperparamètres des classifieurs. Nous avons essayé de voir les hyperparamètres des classifieurs testés sur `Scikit-learn`, mais nous avons eu mal à comprendre et choisir un meilleur hyperparamètre. Grâce à un article concernant exactement la modification des hyperparamètres de classifieurs que nous avons choisis pour ce projet, nous avons pu tester et obtenir les performances pour quelques classifeurs ayant différents paramètres, mais cela n'est pas suffisant pour d'autres classifieurs.
 
-D'ailleurs, il faudrait mieux créer un feature nous même au lieu de choisir directement un feature proposé par scikit-learn. Par exemple, la longueur moyenne des mots peut-être une bonne idée.
+D'ailleurs, il faudrait mieux créer un feature nous même au lieu de choisir directement un feature proposé par `scikit-learn`. Par exemple, la longueur moyenne des mots peut être une bonne idée.
 
 ## Difficultés rencontrées 
 **1. Choix de la tokenisation pour le corpus français**
