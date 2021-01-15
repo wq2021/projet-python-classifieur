@@ -38,13 +38,13 @@ Ensuite, nous avons effectué des tâches suivantes après l'observation de donn
 - Suppression de lignes doublons avec `drop_duplicate()` sur `pandas`.
 - Nettoyage de données :
 
-  a. supprimer des urls et des symboles spéciaux (♬,♪,♩,♫, etc.)
+  a. supprimer les urls et des symboles spéciaux (♬,♪,♩,♫, etc.)
 
   b. remplacer les symboles d'HTML par leurs symboles généraux (`&amp;` => `&`)
 
-  c. remplacer les emoticons par le mot correspondant (`;)` => `smile`, `:o` => `surprise`, etc.)
+  c. remplacer es emoticons par le mot correspondant (`;)` => `smile`, `:o` => `surprise`, etc.)
 
-  d. remplacer des emotions semi-textuels (`:des rires:` => des rire, `::soupir::` => soupir, etc.)
+  d. remplacer les émoticons semi-textuels (`:des rires:` => des rire, `::soupir::` => soupir, etc.)
 
   e. faire la tokenisation
 
@@ -92,9 +92,9 @@ X_train, y_train, X_test, y_test = load_datasets()
 ### 3. Extraction des features de textes ###
 Le module [sklearn.feature_extraction](https://scikit-learn.org/stable/modules/classes.html#module-sklearn.feature_extraction) se sert à extraire des features d'imgages et de textes. Nous nous concentrons sur le sous-module `sklearn.feature_extraction.text` qui permet d'établir des vecteurs de features à partir de documents textuels. Deux sous-modules ont été implémenté dans notre projet : 
 
-`feature_extraction.text.CountVectorizer`: convertir une collection de documents textuels à une matrice de fréquence de tokens. 
+- `feature_extraction.text.CountVectorizer`: convertir une collection de documents textuels à une matrice de fréquence de tokens. 
 
-`feature_extraction.text.TfidfVectorizer`: convertir une collection de documents à une matrice de feature TF-IDF.
+- `feature_extraction.text.TfidfVectorizer`: convertir une collection de documents à une matrice de feature TF-IDF.
 
 Nous prenons l'extraction de TF-IDF comme l'exemple :
 
@@ -104,11 +104,14 @@ X_train_tfidf = tfidf_vectorizer.fit_transform(X_train)
 words = tfidf_vectorizer.get_feature_names()
 ```
 
-4. Construction et évaluation des classifieurs 
-Benchmark : classifieur de Naive Bayes
+### 4. Construction et évaluation des classifieurs ###
+
+**Benchmark : classifieur de Naive Bayes**
 Le classifieur Naive Bayes est un bon benchmark parmi de divers classifieurs proposés par `scikit-learn`, dont [`MultinomialNB`](https://scikit-learn.org/stable/modules/naive_bayes.html#multinomial-naive-bayes) s'adapte à la classification de textes.
 
-Il suffit d'appliquer le sous-module d'extraction de features de texte `tfidf_vectorizer` (ou `CountVectorizer`) avec le classifieur dans le pipeline, puis faire entraîner les données de train avec la fonction `fit()`, et faire la prédiction avec la fonction `predict()`. `sklearn.metrics.classification_report` permet d'afficher l'évaluation de la classification.
+Il suffit d'appliquer le sous-module d'extraction de features de texte `tfidf_vectorizer` (ou `CountVectorizer`) avec le classifieur dans le pipeline, puis faire entraîner les données de train avec la fonction `fit()`, et faire la prédiction avec la fonction `predict()`. 
+
+`sklearn.metrics.classification_report` permet d'afficher l'évaluation de la classification.
 
 ```python
 text_clf = Pipeline([('vect',TfidfVectorizer()),('clf',MultinomialNB())])
@@ -131,9 +134,9 @@ print(classification_report(predicted, y_test))
 
  Nous avons essayé d'utiliser deux librairies pour tokeniser les données français : [spaCy](https://spacy.io/) et [NLTK](https://www.nltk.org/). 
  
- Néanmoins, NLTK ne peut pas proposer une tokenisation correcte, c'est-à-dire qu'il tokenise seulement en fonction des espaces. Par exemple, il ne tokenise pas le mot "c'est" en deux tokens "c'" et "est". De plus, spaCy nous a pris trop de temps pour la tokenisation. 
+ Néanmoins, NLTK ne peut pas proposer une tokenisation correcte, c'est-à-dire qu'il tokenise seulement en fonction des espaces. Par exemple, il ne tokenise pas le mot `c'est` en deux tokens `c'` et `est`. De plus, spaCy nous a pris trop de temps pour la tokenisation. 
 
- Par conséquent, nous proposons une méthode "stupide" pour effectuer la tokenisation avec de l'espace : nous ajoutons un espace une fois l'apostrophe "'" est apparu, sauf un cas particulier `aujourd'hui` en français.
+ Par conséquent, nous proposons une méthode "stupide" pour effectuer la tokenisation avec de l'espace : nous ajoutons un espace une fois l'apostrophe `'` est apparu, sauf un cas particulier `aujourd'hui` en français.
 
  ```python
     ligne = re.sub(r"'",r"' ",ligne)
