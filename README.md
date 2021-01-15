@@ -1,6 +1,6 @@
 # Documentation
 
-Auteur : Jianying Liu, Qi Wang
+Auteur : Jianying Liu, Qi Wang.
 
 **Cette documentation présente le projet dans le cadre du cours « Langage de script » en M2 TAL parcours Ingénierie Multilingue à l’Inalco.**
 
@@ -9,7 +9,7 @@ Auteur : Jianying Liu, Qi Wang
 **Dans ce projet, nous nous penchons sur la classification de tweets français avec le sentiment.**
 
 ## Données
-Les données ont été choisi sur Kaggle, où les jeux de données(datasets) disponibles sont en open source. Ils présentent 1,5 millions de tweets en français et leur sentiment(étiquette) en binaire (0 pour négatif, 1 pour positif) sous format csv. Voici le lien pour y accéder et télécharger :  [french-twitter-sentiment-analysis](https://www.kaggle.com/hbaflast/french-twitter-sentiment-analysis).
+Les données ont été choisi sur [Kaggle](https://www.kaggle.com/), où les jeux de données(datasets) disponibles sont en open source. Ils présentent 1,5 millions de tweets en français et leur sentiment(étiquette) en binaire (0 pour négatif, 1 pour positif) sous format csv. Voici le lien pour y accéder et télécharger :  [french-twitter-sentiment-analysis](https://www.kaggle.com/hbaflast/french-twitter-sentiment-analysis).
 
 ## Objectifs
 L'objectif de notre projet consiste à réaliser une chaîne de traitement de classification de textes à l'aide de [scikit-learn](https://scikit-learn.org/stable/index.html). Afin de créer un classifieur de documents, nous allons implémenter plusieurs méthodes pour l'extraction des features de données textuels et plusieurs algotithmes pour la classification. 
@@ -107,6 +107,7 @@ words = tfidf_vectorizer.get_feature_names()
 ### 4. Construction et évaluation des classifieurs ###
 
 **Benchmark : classifieur de Naive Bayes**
+
 Le classifieur Naive Bayes est un bon benchmark parmi de divers classifieurs proposés par `scikit-learn`, dont [`MultinomialNB`](https://scikit-learn.org/stable/modules/naive_bayes.html#multinomial-naive-bayes) s'adapte à la classification de textes.
 
 Il suffit d'appliquer le sous-module d'extraction de features de texte `tfidf_vectorizer` (ou `CountVectorizer`) avec le classifieur dans le pipeline, puis faire entraîner les données de train avec la fonction `fit()`, et faire la prédiction avec la fonction `predict()`. 
@@ -120,6 +121,8 @@ predicted = text_clf.predict(X_test)
 print("Naive Bayes : MultinomialNB()")
 print(classification_report(predicted, y_test))
 ```
+
+Au niveau des classifieurs, nous avons choisi `MultinomialNB()`(Naive Bayes), `LogisticRegression()`(Logistic Regression), `SGDClassifier()`(SVM), et `DecisionTreeClassifier()`(Decision Tree).
 
 ## Résultats et discussions ##
 
