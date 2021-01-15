@@ -139,10 +139,11 @@ Au niveau des classifieurs, nous avons choisi :
 - `DecisionTreeClassifier()`: Decision Tree
 
 ## Implémentation des modules 
-### librairies utilisés
-**os, shutil, pandas, re, numpy, sklearn**
-### modules créés
-**normalisation, pre_traitement, testerClassifieur**
+- ### librairies utilisés
+**`os`, `shutil`, `pandas`, `re`, `numpy`, `sklearn`**
+
+- ### modules créés
+**`normalisation`, `pre_traitement`, `testerClassifieur`**
 
 
 ## Résultats et discussions ##
@@ -270,5 +271,14 @@ weighted avg       0.67      0.67      0.67     60000
     ligne = re.sub(r"aujourd' hui",r"aujourd'hui",ligne)
  ```
 
-**2. Pandas**
+**2. L'utilisation du `Pandas`**
 
+  Puisque `sklearn` peut utiliser les datas sous forme de `DataFrame` et notre corpus original est sous format `csv`, notre première idée est de structurer les données et d'utiliser seulement le document `csv` à l'aide de `pandas`. 
+
+  Néanmoins, ces deux librairies sont toutes nouvelles pour nous. Au début, nous ne trouvons pas d'un exemple ayant une structure de données similaire pour nous inspirer à lier ces deux formats. Donc nous nous sommes détournées vers la génération d'un répertoire de corpus. Mais après, un blog sur web nous a montré un bon exemple, donc on rajoute une fonction qui fonctionnait plus efficacement, soit `importer_data_csv`.
+
+**3. Filtrage des stopwords**
+
+  Pendant l'élimination des mots grammaticaux, nous avons constaté une situation bizarre: certains mots dans la liste `stopwords_fr.txt` ne sont pas supprimés après le traitement. 
+
+  Après beaucoup de temps bien circulé, nous avons finalement trouvé la raison : l'utilisation de `remove` directement sur la liste a causé ce problème. On aurait dû créer une nouvelle liste ou une chaîne de caractère vide pour rajouter et concaténer les mots filtrés. 
