@@ -3,44 +3,34 @@ import numpy as np
 # import csv
 import pandas as pd
 import normalisation as nor
+from sklearn.model_selection import train_test_split
 
 # from sklearn.compose import ColumnTransformer
 # from sklearn.feature_extraction.text import TfidfVectorizer
 
-
-
-def echantillonner(taille, ficName="french_tweets.csv"):
-    """
-        échantillonnage aléatoire du corpus original, 
-        créer un nouveau csv dans le répertoire ressources, imprimer dans le terminal l'info de l'échantillon
-
-        nom du fichier sorti:  echantillon_taille.csv      ex. echantillon_100.csv
-        taille du corpus original:
-            0(negatif) 771604
-            1(positif) 755120
-    """
-    # fixer le répertoire du corpus et l'adresse du fichier sortie
+def importer_data_csv(fic_csv, test_size):
     path = sys.path[0]
+    csvfile = f"{path}/../ressources/{fic_csv}"
+    df = pd.read_csv(csvfile)
+    # print(df.head())
+    # print(df.label.unique())      #obtenir les cat
 
-    fichier = f"{path}/../ressources/{ficName}"
-    df = pd.read_csv(fichier)
+    stopwords = nor.importer_stopwords("stopwords_fr.txt")
+    df['normalise'] = df["text"].apply(lambda x:nor.nettoyage(x, stopwords, lower=True, stopword=True))
+    # print(df.head())
+    X_train, X_test, y_train, y_test = train_test_split(df.normalise.values, df.label.values, test_size=test_size, stratify=df.label.values)
+    # X_train, y_train, X_test, y_test = cross_validation.train_test_split(df.normalise.values, df.label.values, test_size=0.4, stratify=df.label.values)
+    return X_train, y_train, X_test, y_test
 
-    # supprimer les doublons
-    df2 = df.drop_duplicates()
-    df2 = df2.sample(n=taille)
-
-    print("################\nInfo sur les catégories:")
-    print(df2["label"].value_counts())
-    print("################")
-
-    df2.to_csv(f"{path}/../ressources/echantillon_{taille}.csv", index=False)
 
 
 def main():
-    echantillonner(20)
-    # path = sys.path[0]
-    # csvfile = f"{path}/../ressources/echantillon_10.csv"
-    # df = pd.read_csv(csvfile)
+    a,b,c,d = importer_data_csv("echantillon_20.csv", 0.3)
+    print("train-set:")
+    print(d)
+    
+
+
     # df2 = df["text"].apply(lambda x:nor.nettoyage(x, lower=True))
     # print(df["label"])
     # print(df2.values)

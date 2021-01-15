@@ -13,24 +13,33 @@ from sklearn.tree import DecisionTreeClassifier
 
 from pre_traitement import load_datasets
 
-class Testeur:
-    def __init__(self):
-        super().__init__()
 
 X_train, y_train, X_test, y_test = load_datasets()
 
+class TesteurClf(mode):
+    def __init__(self):
+        self.X_train, self.y_train, self.X_test, self.y_test = load_datasets()
 
-# I. Extraction des features avec TF-IDF
-tfidf_vectorizer = TfidfVectorizer()
-X_train_tfidf = tfidf_vectorizer.fit_transform(X_train)
-words = tfidf_vectorizer.get_feature_names()
-print("*"*15 + "Traitement des features avec TF-IDF" + "*"*15)
+        if mode == "tfidf":
+            self.vectorizer = TfidfVectorizer()
+        elif mode == "countV":
+            self.vectorizer = CountVectorizer()
+        vectorizer.fit_transform(self.X_train)
 
-# II. Extraction des features avec CountVectorizer
-vectorizer = CountVectorizer()
-X_train_CountVec = vectorizer.fit_transform(X_train)
-words = vectorizer.get_feature_names()
-print("*"*15 + "Traitement des features avec CountVectorizer" + "*"*15)
+
+
+# # I. Extraction des features avec TF-IDF
+# tfidf_vectorizer = TfidfVectorizer()
+# X_train_tfidf = tfidf_vectorizer.fit_transform(X_train)
+# words = tfidf_vectorizer.get_feature_names()
+# print("*"*15 + "Traitement des features avec TF-IDF" + "*"*15)
+
+# # II. Extraction des features avec CountVectorizer
+# vectorizer = CountVectorizer()
+# X_train_CountVec = vectorizer.fit_transform(X_train)
+# words = vectorizer.get_feature_names()
+# print("*"*15 + "Traitement des features avec CountVectorizer" + "*"*15)
+
 
 # 1. naive bayes 
 

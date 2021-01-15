@@ -9,6 +9,7 @@ import numpy as np
 import shutil
 import argparse
 import pandas as pd
+from sklearn.model_selection import train_test_split
 
 import normalisation as nor
 
@@ -143,6 +144,24 @@ def load_datasets():
 
         print(" Le nombre de [{}] au total: {}\n".format(nom_type, len(X_data[nom_type])))
     return X_data['train'], y['train'], X_data['test'], y['test']
+
+
+def importer_data_csv(fic_csv, test_size, lowercase, stopword):
+    """
+        une autre manière pour importer le data directement par fichier csv
+    """
+    path = sys.path[0]
+    csvfile = f"{path}/../ressources/{fic_csv}"
+    df = pd.read_csv(csvfile)
+    # print(df.head())
+    # print(df.label.unique())      #obtenir les cat
+
+    stopwords = nor.importer_stopwords("stopwords_fr.txt")
+    df['normalise'] = df["text"].apply(lambda x:nor.nettoyage(x, stopwords, lower=lowercase, stopword=stopword))
+    # print(df.head())
+    X_train, X_test, y_train, y_test = train_test_split(df.normalise.values, df.label.values, test_size=test_size, stratify=df.label.values)
+    # X_train, y_train, X_test, y_test = cross_validation.train_test_split(df.normalise.values, df.label.values, test_size=0.4, stratify=df.label.values)
+    return X_train, y_train, X_test, y_test
 
 
 def main():
