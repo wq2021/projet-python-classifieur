@@ -20,7 +20,7 @@ sois
 suis
 ayante
 mon
-s
+s'
 se
 étants
 aurions
@@ -28,7 +28,7 @@ me
 eue
 avec
 ta
-d
+d'
 étant
 nos
 à
@@ -42,12 +42,12 @@ avez
 eût
 eussiez
 nous
-n
-qu
+n'
+qu'
 ou
 étante
 étés
-j
+j'
 seras
 aie
 furent
@@ -58,7 +58,7 @@ eu
 eusse
 ayant
 leur
-c
+c'
 seriez
 soyons
 soit
@@ -98,7 +98,7 @@ eux
 des
 ton
 ce
-l
+l'
 tes
 fût
 ma
@@ -115,7 +115,7 @@ fus
 soient
 avait
 eûmes
-t
+t'
 serait
 pour
 au
@@ -143,7 +143,7 @@ eussent
 avons
 étais
 qui
-m
+m'
 eus
 auraient
 avais

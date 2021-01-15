@@ -1,215 +1,126 @@
+# -*- coding: utf-8 -*-
+# pour exécuter le script:
+# python3 pre_traitement.py fichier.conllu form 3
+
 import re 
 import os
 import sys
-# from spacy.lang.fr import French
+import numpy as np
+import shutil
+import argparse
+import pandas as pd
 
-path = sys.path[0]   ##########################################
-
-# def tokenisation(contenu):
-#     chaine = ""
-#     nlp = French()
-#     doc = nlp(contenu)
-#     for token in doc:
-#         chaine += token.text
-#         chaine += ' '
-#     return chaine
-
-# def filtre_stopwords(phrase):
-#     liste_stopwords = []
-#     phrase_out = ""
-#     with open('stopwords_fr.txt','r',encoding='utf8') as entree:
-#         for ligne in entree:
-#             # afin d'éliminer "\n" à la fin de chaque stopword
-#             liste_stopwords.append(ligne[:-1])
-#     for mot in phrase.split(' '):
-#         if mot not in liste_stopwords:
-#             phrase_out += mot
-#             phrase_out += " "
-#     return phrase_out
+import normalisation as nor
 
 
+# localiser le corpus, echantillon, repertoire créé
+path = f"{sys.path[0]}/../ressources"               ##########################################
 
-def importer_stopwords(nom_fic):
+
+def echantillonner(taille, ficName="french_tweets.csv"):
     """
-        importer le fichier stopwords du répertoire ressources
-        renvoyer un ensemble de stopwords
+        échantillonnage aléatoire du corpus original, fichier sorti garde l'organisation originale du corpus,
+        renvoie le nom du fichier créé
+        créer un nouveau csv dans le répertoire ressources, imprimer dans le terminal l'info de l'échantillon
+
+        nom du fichier sorti:  echantillon_taille.csv      ex. echantillon_100.csv
+        taille du corpus original (avec doublons):
+            0(negatif) 771604
+            1(positif) 755120
     """
-    # assurer que le chemin relatif est par rapport au nettoyage.py donc marche n'importe où on lance le programme
-    chemin = sys.path[0]
-    fic = f"{chemin}/../ressources/{nom_fic}"
+    # fixer le répertoire du corpus et l'adresse du fichier sortie
 
-    stopwords = set()
-    with open(fic, encoding="utf8") as f:
-        for ligne in f:
-            stopwords.add(ligne[:-1])
-    return stopwords
+    fichier = f"{path}/{ficName}"
+    df = pd.read_csv(fichier)
 
-def nettoyage(ligne, lower=False, stopword=None):
+    # supprimer les doublons
+    df2 = df.drop_duplicates()
+    df2 = df2.sample(n=taille)
+    # imprimer l'info de l'echantillon dans terminal
+    print("################\nInfo sur les catégories:")
+    print(df2["label"].value_counts())
+    print("################")
+
+    df2.to_csv(f"{path}/echantillon_{taille}.csv", index=False)
+    return f"echantillon_{taille}.csv"
+
+
+def create_rep_split():
     """
-        normalisation du texte tweet, renvoie la phrase après traitement; 
-        cette fonction va supprimer les ponctuations, les symboles spéciaux et les urls, 
-        remplacer les emoticons par des mots, et essayer de traiter un peu l'orthographe,
-        mais le traitement de casse et suppression de stopwords est facultatif, pour le faire : 
-            lower=True  stopword = nom_du_fichier_stopwords
+        créer les répertoires de test et de train pour sauvegarder les fichiers txt plus tard
     """
-
-    ligne = str(ligne)
-    
-    # 1. remplacer plus de deux points par un point de suspension
-    ligne = re.sub(r"\.{2,}","…",ligne)
-    
-    # 2. remplacer les symboles d'HTML par leurs symboles généraux
-    ligne = re.sub(r"&quot;","\"",ligne)
-    ligne = re.sub(r"&amp;","&",ligne)
-    ligne = re.sub(r"&lt;","<",ligne)
-    ligne = re.sub(r"&gt;",">",ligne)
-    
-    # 3 . supprimer des urls
-    ligne = re.sub(r'http:/?/?.\S+',r'',ligne)
-
-    # 4 . remplacer les emoticons
-    ligne = re.sub(r':‑\)|;\)|;-\)|:\)|:\'\)|:]|;]|:-}|=]|:}|\(:',"smile",ligne)
-    ligne = re.sub(r'XD|XD{2,}',"laugh",ligne)
-    ligne = re.sub(r':\(|:\[|:\'-\(|:\'\(',"sad",ligne)
-    ligne = re.sub(r':o',"surprise",ligne)
-    ligne = re.sub(r':X|:-\*|:\*',"kiss",ligne)
-    ligne = re.sub(r':\|',"indecision",ligne)
-    ligne = re.sub(r':X|:-X',"togue-tied",ligne)
-    ligne = re.sub(r':-/|:/|:\|:L/:S',"annoyed",ligne)
-    
-    # 5. remplacer des emotions semi-textuels, par exemples: :des rires:, ::soupir::, etc.
-    ligne = re.sub(r'\:{1,}(\w+\s?\w+?)\:{1,}',r'\1',ligne)
-
-    # 6. supprimer des ponctuations
-    ligne = re.sub(r"[+@#&%!?\|\"{\(\[|_\)\]},\.;/:§”“‘~`\*]", "", ligne)
-    
-    # 7. supprimer des symboles spéciaux
-    ligne = re.sub(r"♬|♪|♩|♫","",ligne)
-
-    # 8. la répétition d'une lettre ou des lettres
-    # Exemple d'un tweet: Ça va être un loooooooooooooooooooooooooooooooonnnnnnngggggggg ==> Ça va être un loonngg
-    ligne = re.sub(r"((\w)\2{2,})",r"\2\2",ligne)
-
-    # 9. ajouter une espace après l'apostrophe
-    ligne = re.sub(r"'",r"' ",ligne)
-    ligne = re.sub(r"aujourd' hui",r"aujourd'hui",ligne)
-    
-    # 10. Traitement la casse et les stopwords selon parametres
-    if lower:
-        ligne = ligne.lower()
-    if stopword:
-        stopwords = importer_stopwords(stopword)
-        lst_tokens = ligne.split()
-        for token in lst_tokens:
-            if token in stopwords:
-                lst_tokens.remove(token)
-        ligne = " ".join(lst_tokens).strip()
-
-    return ligne
+    # tester et supprimer d'abord le test et le train existants
+    if os.path.exists(f"{path}/test"):
+        shutil.rmtree(f"{path}/test")
+    if os.path.exists(f"{path}/train"):
+        shutil.rmtree(f"{path}/train")
+        
+    for partie in ["test","train"]:
+        for categorie in ["positif","negatif"]:
+            os.makedirs(f"{path}/{partie}/{categorie}")
 
 
-def corpus_separation():
-    with open(f'{path}/../ressources/echantillon_20.csv','r',encoding="utf8") as entree:
-    # with open('french_tweets.csv','r',encoding="utf8") as entree:
+
+###########################################################################################################
+def corpus_separation(csvfic, minuscule, stopwords):
+    """
+        mettres le contenu du fichier csv dans les répertoires, en respectant la structure demandée
+        exemple train:
+        -train
+            -positif
+                fic1.txt fic2.txt ...
+            -negatif
+                fic3.txt  fic4.txt ...
+    """
+    with open(f'{path}/{csvfic}','r',encoding="utf8") as entree:
         corpus_negatif = []
         corpus_positif = []
+
+        # séparer les tweet selon leur catégorie
         for ligne in entree:
             if ligne.startswith('0'):
                 phrase = ligne[2:]
-                phrase = nettoyage(phrase, stopword="stopwords_fr.txt")
-                # phrase = tokenisation(phrase)
-                # phrase = filtre_stopwords(phrase)
-                phrase = phrase.strip()
+                phrase = nor.nettoyage(phrase, lower=minuscule, stopword=stopwords)
                 corpus_negatif.append(phrase)
                 
             if ligne.startswith('1'):
                 phrase = ligne[2:]
-                phrase = nettoyage(phrase, stopword="stopwords_fr.txt")  
-                # phrase = tokenisation(phrase)                 
-                # phrase = filtre_stopwords(phrase)
-                phrase = phrase.strip()               
+                phrase = nor.nettoyage(phrase, lower=minuscule, stopword=stopwords)             
                 corpus_positif.append(phrase)
         
+        # transformer en nparray, pour qu'il soit plus vite
+        corpus_negatif = np.array(corpus_negatif)
+        train_neg_taille = len(corpus_negatif)*0.8
+        corpus_positif = np.array(corpus_positif)
+        train_pos_taille = len(corpus_positif)*0.8
+
+        # créer les répertoires test et train
+        create_rep_split()
+
+        # remplir les rep test et train
         for (nombre,phrase) in enumerate(corpus_negatif, start=1):
             fichier = f"{nombre}.txt"
-            # sélectionner les 600000 premiers textes pour le train (qui prend environ 80% des données)
-            #if nombre < 1501:
-            if nombre < 5:
-                with open(f"{path}/../ressources/train/negatif/{fichier}",'w',encoding='utf8') as out:
+            # mettre 80% de negatif dans train
+            if nombre < train_neg_taille:
+                with open(f"{path}/train/negatif/{fichier}",'w',encoding='utf8') as out:
                     out.write(phrase)
             # les fichiers restants pour le test (qui prend environ 20% des données)
             else:
-                with open(f"{path}/../ressources/test/negatif/{fichier}",'w',encoding='utf8') as out:
+                with open(f"{path}/test/negatif/{fichier}",'w',encoding='utf8') as out:
                     out.write(phrase)
                 
         for (nombre,phrase) in enumerate(corpus_positif, start=1):
-            # fichier = str(nombre) + str(".txt")
             fichier = f"{nombre}.txt"
-            #if nombre < 1501:
-            if nombre < 5:
-                with open(f"{path}/../ressources/train/positif/{fichier}",'w',encoding='utf8') as out:
+            if nombre < train_pos_taille:
+                with open(f"{path}/train/positif/{fichier}",'w',encoding='utf8') as out:
                     out.write(phrase)
             else:
-                with open(f"{path}/../ressources/test/positif/{fichier}",'w',encoding='utf8') as out:
+                with open(f"{path}/test/positif/{fichier}",'w',encoding='utf8') as out:
                     out.write(phrase)
-
-
-
-
-
-
-
-# def corpus_separation():
-#     with open('echantillon.csv','r',encoding="utf8") as entree:
-#     # with open('french_tweets.csv','r',encoding="utf8") as entree:
-#         corpus_negatif = []
-#         corpus_positif = []
-#         for ligne in entree:
-#             if ligne.startswith('0'):
-#                 phrase = ligne[2:]
-#                 phrase = nettoyage(phrase)
-#                 phrase = tokenisation(phrase)
-#                 # phrase = filtre_stopwords(phrase)
-#                 phrase = phrase.strip()
-#                 corpus_negatif.append(phrase)
-                
-#             if ligne.startswith('1'):
-#                 phrase = ligne[2:]
-#                 phrase = nettoyage(phrase)  
-#                 phrase = tokenisation(phrase)                 
-#                 # phrase = filtre_stopwords(phrase)
-#                 phrase = phrase.strip()               
-#                 corpus_positif.append(phrase)
-        
-#         for (nombre,phrase) in enumerate(corpus_negatif, start=1):
-#             fichier = f"{nombre}.txt"
-#             # sélectionner les 600000 premiers textes pour le train (qui prend environ 80% des données)
-#             #if nombre < 1501:
-#             if nombre < 600001:
-#                 with open(os.path.join('/Users/wq/Desktop/TAL/M2/S1/Python/Projet_final/data/train/negatif',fichier),'w',encoding='utf8') as out:
-#                     out.write(phrase)
-#             # les fichiers restants pour le test (qui prend environ 20% des données)
-#             else:
-#                 with open(os.path.join('/Users/wq/Desktop/TAL/M2/S1/Python/Projet_final/data/test/negatif',fichier),'w',encoding='utf8') as out:
-#                     out.write(phrase)
-                
-#         for (nombre,phrase) in enumerate(corpus_positif, start=1):
-#             # fichier = str(nombre) + str(".txt")
-#             fichier = f"{nombre}.txt"
-#             #if nombre < 1501:
-#             if nombre < 600001:
-#                 with open(os.path.join('/Users/wq/Desktop/TAL/M2/S1/Python/Projet_final/data/train/positif',fichier),'w',encoding='utf8') as out:
-#                     out.write(phrase)
-#             else:
-#                 with open(os.path.join('/Users/wq/Desktop/TAL/M2/S1/Python/Projet_final/data/test/positif',fichier),'w',encoding='utf8') as out:
-#                     out.write(phrase)
-
-corpus_separation()
 
 
 def load_datasets():
 
-    # chemin = '/Users/wq/Desktop/TAL/M2/S1/Python/Projet_final/data/'
     chemin = f"{path}/../ressources"
     X_data = {'train':[], 'test':[]}
     y = {'train':[], 'test':[]}
@@ -232,4 +143,52 @@ def load_datasets():
         print(" Le nombre de [{}] au total: {}\n".format(nom_type, len(X_data[nom_type])))
     return X_data['train'], y['train'], X_data['test'], y['test']
 
-load_datasets()
+
+def main():
+    # parser = argparse.ArgumentParser(description="créer des répertoires de data bien formés et normaliser le texte")
+    # parser.add_argument("taille", type=int, help="taille de l'échantillon")
+    # parser.add_argument("--ficStop", help="nom du fichier de stopwords")
+    # parser.add_argument("--ficCsv", help="nom du fichier corpus csv")
+    # parser.add_argument("--lowercase", type=bool, help="donner le True si vous voulez mettre tous les mots en minuscules")
+    
+    # args = parser.parse_args()
+    
+    # size = args.taille
+    # fic_stopwords = None
+    # if args.ficStop:
+    #     fic_stopwords = args.ficStop
+    # lowercase = False
+    # if args.lowercase:
+    #     lowercase = args.lowercase
+    # fic_csv = "french_tweets.csv"
+    # if args.ficCsv:
+    #     fic_csv = args.ficCsv
+    #     print(fic_stopwords)
+    
+    # size = args.taille
+    # fic_stopwords = args.ficStop
+    # print(fic_stopwords)
+    # lowercase = args.lowercase
+    # fic_csv = "french_tweets.csv"
+    # if args.ficCsv:
+    #     fic_csv = args.ficCsv
+
+    # size = 20
+    # fic_stopwords = "stopwords_fr.txt"
+    # lowercase = True
+    # # fic_csv = "french_tweets.csv"
+    # fic_csv = "echantillon_200.csv"
+        
+
+    # nom_csv_sample = echantillonner(size, ficName=fic_csv)
+    nom_csv_sample = echantillonner(20, ficName="echantillon_200.csv")
+    # corpus_separation(nom_csv_sample, minuscule=lowercase, stopwords=fic_stopwords)
+    # d'autre choix possible
+    # corpus_separation(nom_csv_sample, minuscule=True)
+    corpus_separation(nom_csv_sample, minuscule=True, stopwords="stopwords_fr.txt")
+
+    # load_datasets()
+
+if __name__ == "__main__":
+    main()
+

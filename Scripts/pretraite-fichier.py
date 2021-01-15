@@ -24,6 +24,8 @@ def echantillonner(taille, ficName="french_tweets.csv"):
 
     fichier = f"{path}/../ressources/{ficName}"
     df = pd.read_csv(fichier)
+
+    # supprimer les doublons
     df2 = df.drop_duplicates()
     df2 = df2.sample(n=taille)
 
