@@ -23,7 +23,7 @@ Nous avons travaillé ensemble pour la rédaction de la documentation, aussi pou
 
 La classification de textes basant sur Scikit-learn peut être divisée par les étapes suivantes : 
 
-- [1. Prétraitement de données textuelles](#1-Pré-traitement-de-données-textuelles)
+- [1. Prétraitement de données textuelles](#1-prétraitement-de-données-textuelles)
 - [2. Génération de données d'entraînement et de tests](#2-génération-de-données-dentraînement-et-de-tests)
 - [3. Extraction des features de textes](#3-Extraction-des-features-de-textes)
 - [4. Construction et évaluation des classifieurs](#4-Construction-et-évaluation-des-classifieurs)
@@ -275,7 +275,7 @@ weighted avg       0.67      0.67      0.67     60000
 
   Puisque `sklearn` peut utiliser les datas sous forme de `DataFrame` et notre corpus original est sous format `csv`, notre première idée est de structurer les données et d'utiliser seulement le document `csv` à l'aide de `pandas`. 
 
-  Néanmoins, ces deux librairies sont toutes nouvelles pour nous. Au début, nous ne trouvons pas d'un exemple ayant une structure de données similaire pour nous inspirer à lier ces deux formats. Donc nous nous sommes détournées vers la génération d'un répertoire de corpus. Mais après, un blog sur web nous a montré un bon exemple, donc on rajoute une fonction qui fonctionnait plus efficacement, soit `importer_data_csv`.
+  Néanmoins, ces deux librairies sont toutes nouvelles pour nous. Au début, nous ne trouvons pas d'un exemple ayant une structure de données similaire pour nous inspirer à lier ces deux formats. Donc nous nous sommes détournées vers la génération d'un répertoire de corpus. Mais après, un blog sur web nous a montré un bon exemple, donc on rajoute une fonction qui marchait plus efficacement, soit `importer_data_csv`.
 
 **3. Filtrage des stopwords**
 
