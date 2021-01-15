@@ -1,6 +1,7 @@
 import os
 import re
 import numpy as np
+import argparse
 import matplotlib.pyplot as plt
 
 from sklearn.pipeline import Pipeline
@@ -12,66 +13,81 @@ from sklearn.metrics import classification_report, confusion_matrix
 from sklearn.tree import DecisionTreeClassifier
 
 from pre_traitement import load_datasets
+from pre_traitement import importer_data_csv
+from pre_traitement import echantillonner
 
 
-X_train, y_train, X_test, y_test = load_datasets()
+# X_train, y_train, X_test, y_test = load_datasets()
 
-class TesteurClf(mode):
-    def __init__(self):
-        self.X_train, self.y_train, self.X_test, self.y_test = load_datasets()
 
-        if mode == "tfidf":
+class TesteurClf:
+    def __init__(self, vect, clf, X_train, y_train, X_test, y_test):
+        self.X_train, self.y_train, self.X_test, self.y_test = X_train, y_train, X_test, y_test
+
+        if vect == "tfidf":
             self.vectorizer = TfidfVectorizer()
-        elif mode == "countV":
+            self.vec = "tfidf"
+        elif vect == "countV":
             self.vectorizer = CountVectorizer()
-        vectorizer.fit_transform(self.X_train)
+            self.vec = "countVectorizer"
+        
+        if clf == "bayes":
+            self.classifieur = MultinomialNB()
+            self.clf = "Naive Bayes : MultinomialNB()"
+        elif clf == "LR":
+            self.classifieur = LogisticRegression()
+            self.clf = "Logistic Regression : LogisticRegression()"
+        elif clf == "SVM":
+            self.classifieur = SGDClassifier()
+            self.clf = "SVM : SGDClassifier()"
+        elif clf == "tree":
+            self.classifieur = DecisionTreeClassifier()
+            self.clf = "Decision Tree : DecisionTreeClassifier()"
+    
+    def modeliser(self):
+        text_clf = Pipeline([('vect', self.vectorizer),('clf', self.classifieur)])
+        text_clf.fit(self.X_train, self.y_train)
+        predicted = text_clf.predict(self.X_test)
+        report = classification_report(predicted, self.y_test)
+
+        return self.clf, self.vec, report
 
 
 
-# # I. Extraction des features avec TF-IDF
-# tfidf_vectorizer = TfidfVectorizer()
-# X_train_tfidf = tfidf_vectorizer.fit_transform(X_train)
-# words = tfidf_vectorizer.get_feature_names()
-# print("*"*15 + "Traitement des features avec TF-IDF" + "*"*15)
-
-# # II. Extraction des features avec CountVectorizer
-# vectorizer = CountVectorizer()
-# X_train_CountVec = vectorizer.fit_transform(X_train)
-# words = vectorizer.get_feature_names()
-# print("*"*15 + "Traitement des features avec CountVectorizer" + "*"*15)
 
 
-# 1. naive bayes 
-
-# Pipeline
-text_clf = Pipeline([('vect',TfidfVectorizer()),('clf',MultinomialNB())])
-text_clf.fit(X_train, y_train)
-
-predicted = text_clf.predict(X_test)
-print("Naive Bayes : MultinomialNB()")
-print(classification_report(predicted, y_test))
-
-# 2. Logistic Regression
-text_clf_lr = Pipeline([('vect',TfidfVectorizer()),('clf',LogisticRegression())])
-text_clf_lr.fit(X_train, y_train)
-
-predicted_lr = text_clf_lr.predict(X_test)
-print("Logistic Regression : LogisticRegression()")
-print(classification_report(predicted_lr, y_test))
 
 
-# 3. SVM 
-text_clf_svm = Pipeline([('vect',TfidfVectorizer()),('clf',SGDClassifier(loss="hinge", penalty="l2"))])
-text_clf_svm.fit(X_train, y_train)
+def main():
+    parser = argparse.ArgumentParser(description="créer des répertoires de data bien formés et normaliser le texte")
+    parser.add_argument("taille", type=int, help="taille de l'échantillon")
+    parser.add_argument("testsize", type=float, help="le pourcentage de sous-partie test de l'échantillon")
+    parser.add_argument("--Stop", type=bool, help="booléen, choisir si on traite les stopwords ou pas")
+    parser.add_argument("--ficCsv", help="nom du fichier corpus csv")
+    parser.add_argument("--lowercase", type=bool, help="donner le True si vous voulez mettre tous les mots en minuscules")
+    
+    args = parser.parse_args()
+    
+    size = args.taille
+    test_size = args.testsize
+    stopword = args.Stop
+    lowercase = args.lowercase
+    fic_csv = "french_tweets.csv"
+    if args.ficCsv:
+        fic_csv = args.ficCsv
+        
 
-predicted_svm = text_clf_svm.predict(X_test)
-print("SVM : SGDClassifier()")
-print(classification_report(predicted_svm, y_test))
+    nom_csv_sample = echantillonner(size, ficName=fic_csv)
+    X_train, y_train, X_test, y_test = importer_data_csv(nom_csv_sample, test_size, lowercase, stopword)
 
-# 4. Decision Tree
-text_clf_dt = Pipeline([('vect',CountVectorizer()),('clf',DecisionTreeClassifier())])
-text_clf_dt.fit(X_train, y_train)
+    lst_vect = ["tfidf", "countV"]
+    lst_clf = ["bayes", "LR", "SVM", "tree"]
+    for vec in lst_vect:
+        for clf in lst_clf:
+            testeur = TesteurClf(vec, clf, X_train, y_train, X_test, y_test)
+            entete, vectorizer, report = testeur.modeliser()
+            print(entete, vectorizer)
+            print(report)
 
-predicted_dt = text_clf_dt.predict(X_test)
-print("Decision Tree : DecisionTreeClassifier()")
-print(classification_report(predicted_dt, y_test))
+if __name__ == "__main__":
+    main()
