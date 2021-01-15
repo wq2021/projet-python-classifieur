@@ -52,7 +52,7 @@ Ensuite, nous avons effectué des tâches suivantes après l'observation de donn
 
   c. remplacer es emoticons par le mot correspondant (`;)` => `smile`, `:o` => `surprise`, etc.)
 
-  d. remplacer les émoticons semi-textuels (`:des rires:` => des rire, `::soupir::` => soupir, etc.)
+  d. remplacer les émoticons semi-textuels (`:des rires:` => des rires, `::soupir::` => soupir, etc.)
 
   e. faire la tokenisation
 
@@ -89,6 +89,8 @@ resources
     │     ├─ *.txt
     │     ├─ ...
     └─    └─ ...
+
+Un sample de 1000 tweets générés sont également fournis dans le répertoire `output`.
 
 ```
 À partir des repertoires de donnés bien séparés et établis, nous avons extrait le contenu et leur étiquette, en produisant l'output pourvant être reconnu par scikit-learn pour l'apprentissage: `X_train`(données de l'entraînement), `y_train`(étiquettes de l'entraînement), `X_test`(données du test), `y_test`(étiquettes du test).
@@ -136,15 +138,23 @@ Au niveau des classifieurs, nous avons choisi :
 - `SGDClassifier()`:SVM 
 - `DecisionTreeClassifier()`: Decision Tree
 
+## Implémentation des modules 
+### librairies utilisés
+**os, shutil, pandas, re, numpy, sklearn**
+### modules créés
+**normalisation, pre_traitement, testerClassifieur**
+
+
 ## Résultats et discussions ##
 
-En consérant le volume important des données, nous avons décidé de sélectionner un échantillon de 200,000 tweets pour tester nos classifieurs. 
+En considérant le volume important des données, nous avons décidé de sélectionner un échantillon de **200,000** tweets pour tester nos classifieurs. 
 
-En général, les classifieurs choisis ont eu un résultat assez bon, malgré le fait que les valeurs de F-mesure ne soient pas très satisfaisants.
-`TfidfVectorizer` est la meilleure en tant que la méthode d'extraction des features, par rapport à `CountVectorizer`.
+En général, les classifieurs choisis ont eu un résultat assez bon, malgré le fait que les valeurs de F-mesure ne soient pas très satisfaisantes.
+`TfidfVectorizer` est la meilleure en tant que la méthode d'extraction des features, par rapport à `CountVectorizer`, notamment en comparant le classifieur de régression logistique (0,76 vs 0,75) et de l'arbre de décision(0,68 vs 0.67), mais l'écart reste très petit. 
 
-Voici les résultats que nous avons obtenus :
+En ce qui concerne le classifieur, `LogisticRegression()` a eu globalement un meilleur résultat, par contre, `DecisionTreeClassifier()` n'a toujours pas eu de bon résultat que d'autres classifieurs. Par conséquent, nous concluons que **l'algorithme `LogisticRegression()` avec le feature `TfidfVectorizer`** ont eu une meilleure performance pour nos données.
 
+Voici les résultats en détails que nous avons obtenus :
 
 ### Méthode d'extraction des features de textes : `TfidfVectorizer` ###
 
@@ -244,11 +254,6 @@ Decision Tree : DecisionTreeClassifier() countVectorizer
    macro avg       0.67      0.67      0.67     60000
 weighted avg       0.67      0.67      0.67     60000
 ```
-
-
-## Implémentation
-### modules implémenté : os, shutil ???
-
  
 
 ## Difficultés rencontrées 
