@@ -21,7 +21,7 @@ import normalisation as nor
 
 
 # localiser le corpus, echantillon, repertoire créé
-path = f"{sys.path[0]}/../ressources"               ##########################################
+path = f"{sys.path[0]}/../ressources" 
 
 
 
