@@ -9,18 +9,23 @@ Auteur : Jianying Liu, Qi Wang.
 **Dans ce projet, nous nous penchons sur la classification de tweets français avec le sentiment.**
 
 ## Données
+
 Les données ont été choisi sur [Kaggle](https://www.kaggle.com/), où les jeux de données(datasets) disponibles sont en open source. Ils présentent 1,5 millions de tweets en français et leur sentiment(étiquette) en binaire (0 pour négatif, 1 pour positif) sous format csv. Voici le lien pour y accéder et télécharger :  [french-twitter-sentiment-analysis](https://www.kaggle.com/hbaflast/french-twitter-sentiment-analysis).
 
 ## Objectifs
+
 L'objectif de notre projet consiste à réaliser une chaîne de traitement de classification de textes à l'aide de [scikit-learn](https://scikit-learn.org/stable/index.html). Afin de créer un classifieur de documents, nous allons implémenter plusieurs méthodes pour l'extraction des features de données textuels et plusieurs algotithmes pour la classification. 
 
+
 ## Méthodologie
+
 La classification de textes basant sur Scikit-learn peut être divisée par les étapes suivantes : 
+<! -- TOC -- >
 - [1. Pré-traitement de données textuels](#1. Pré-traitement de données textuels)
 - [2. Génération de données d'entraînement et de tests](#2. Génération de données d'entraînement et de tests)
 - [3. Extraction des features de textes](#3. Extraction des features de textes)
 - [4. Construction et évaluation des classifieurs] (#4. Construction et évaluation des classifieurs)
-
+<! -- /TOC -- >
 
 ### 1. Pré-traitement de données textuels ###
 Les données sont stockés dans un fichier csv, chaque ligne commence par la polarité de sentiment (0 pour le sentiment négatif, 1 pour le sentiment positif), se suit par le contenu de tweet. Voici quelques lignes d'exemple pour mieux visualiser de la structure:
