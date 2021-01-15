@@ -4,17 +4,17 @@ Auteurs : Jianying Liu, Qi Wang.
 
 **Cette documentation présente le projet dans le cadre du cours « Langage de script » en M2 TAL parcours Ingénierie Multilingue à l’Inalco.**
 
-**La classification de textes est une des tâches fondamentales dans le traitement automatique des langues. Elle est basée sur les documents proposés en tant que l'entraînement, dans le but de pouvoir classifier de nouveaux documents avec des étiquettes(labels) pré-définis. La classifictaion de textes peut s'appliquer aux pratiques, tels que la détection de spams, l'analyse de sentiments, la classification automatiques d'actualités, etc.**
+**La classification de textes est une des tâches fondamentales dans le traitement automatique des langues. Elle est basée sur les documents proposés en tant que l'entraînement, dans le but de pouvoir classifier de nouveaux documents avec des étiquettes(labels) prédéfinis. La classification de textes peut s'appliquer aux pratiques, tels que la détection de spams, l'analyse de sentiments, la classification automatique d'actualités, etc.**
 
 **Dans ce projet, nous nous penchons sur la classification de tweets français avec le sentiment.**
 
 ## Données
 
-Les données ont été choisi sur [Kaggle](https://www.kaggle.com/), où les jeux de données(datasets) disponibles sont en open source. Ils présentent 1,5 millions de tweets en français et leur sentiment(étiquette) en binaire (0 pour négatif, 1 pour positif) sous format csv. Voici le lien pour y accéder et télécharger :  [french-twitter-sentiment-analysis](https://www.kaggle.com/hbaflast/french-twitter-sentiment-analysis).
+Les données ont été choisi sur [Kaggle](https://www.kaggle.com/), où les jeux de données(datasets) disponibles sont en open source. Ils présentent 1,5 million de tweets en français et leur sentiment(étiquette) en binaire (0 pour négatif, 1 pour positif) sous format csv. Voici le lien pour y accéder et télécharger :  [french-twitter-sentiment-analysis](https://www.kaggle.com/hbaflast/french-twitter-sentiment-analysis).
 
 ## Objectifs
 
-L'objectif de notre projet consiste à réaliser une chaîne de traitement de classification de textes à l'aide de [scikit-learn](https://scikit-learn.org/stable/index.html). Afin de créer un classifieur de documents, nous allons implémenter plusieurs méthodes pour l'extraction des features de données textuels et plusieurs algotithmes pour la classification. 
+L'objectif de notre projet consiste à réaliser une chaîne de traitement de classification de textes à l'aide de [scikit-learn](https://scikit-learn.org/stable/index.html). Afin de créer un classifieur de documents, nous allons implémenter plusieurs méthodes pour l'extraction des features de données textuelles et plusieurs algorithmes pour la classification. 
 
 
 ## Méthodologie
@@ -23,13 +23,13 @@ Nous avons travaillé ensemble pour la rédaction de la documentation, aussi pou
 
 La classification de textes basant sur Scikit-learn peut être divisée par les étapes suivantes : 
 
-- [1. Pré-traitement de données textuels](#1-Pré-traitement-de-données-textuels)
+- [1. Prétraitement de données textuelles](#1-Pré-traitement-de-données-textuelles)
 - [2. Génération de données d'entraînement et de tests](#2-génération-de-données-dentraînement-et-de-tests)
 - [3. Extraction des features de textes](#3-Extraction-des-features-de-textes)
 - [4. Construction et évaluation des classifieurs](#4-Construction-et-évaluation-des-classifieurs)
 
-### 1. Pré-traitement de données textuels ###
-Les données sont stockés dans un fichier csv, chaque ligne commence par la polarité de sentiment (0 pour le sentiment négatif, 1 pour le sentiment positif), se suit par le contenu de tweet. 
+### 1. Prétraitement de données textuelles ###
+Les données sont stockées dans un fichier csv, chaque ligne commence par la polarité de sentiment (0 pour le sentiment négatif, 1 pour le sentiment positif), se suit par le contenu de tweet. 
 
 Voici quelques lignes d'exemple pour mieux visualiser de la structure:
 
@@ -50,9 +50,9 @@ Ensuite, nous avons effectué des tâches suivantes après l'observation de donn
 
   b. remplacer les symboles d'HTML par leurs symboles généraux (`&amp;` => `&`)
 
-  c. remplacer es emoticons par le mot correspondant (`;)` => `smile`, `:o` => `surprise`, etc.)
+  c. remplacer les émoticônes par le mot correspondant (`;)` => `smile`, `:o` => `surprise`, etc.)
 
-  d. remplacer les émoticons semi-textuels (`:des rires:` => des rires, `::soupir::` => soupir, etc.)
+  d. remplacer les émoticônes semi-textuels (`:des rires:` => des rires, `::soupir::` => soupir, etc.)
 
   e. faire la tokenisation
 
@@ -93,14 +93,14 @@ resources
 Un sample de 1000 tweets générés sont également fournis dans le répertoire `output`.
 
 ```
-À partir des repertoires de donnés bien séparés et établis, nous avons extrait le contenu et leur étiquette, en produisant l'output pourvant être reconnu par scikit-learn pour l'apprentissage: `X_train`(données de l'entraînement), `y_train`(étiquettes de l'entraînement), `X_test`(données du test), `y_test`(étiquettes du test).
+À partir des répertoires de donnés bien séparés et établis, nous avons extrait le contenu et leur étiquette, en produisant l'output pouvant être reconnu par scikit-learn pour l'apprentissage: `X_train`(données de l'entraînement), `y_train`(étiquettes de l'entraînement), `X_test`(données du test), `y_test`(étiquettes du test).
 
 ```python
 X_train, y_train, X_test, y_test = load_datasets()
 ```
 
 ### 3. Extraction des features de textes ###
-Le module [sklearn.feature_extraction](https://scikit-learn.org/stable/modules/classes.html#module-sklearn.feature_extraction) se sert à extraire des features d'imgages et de textes. Nous nous concentrons sur le sous-module `sklearn.feature_extraction.text` qui permet d'établir des vecteurs de features à partir de documents textuels. Deux sous-modules ont été implémenté dans notre projet : 
+Le module [sklearn.feature_extraction](https://scikit-learn.org/stable/modules/classes.html#module-sklearn.feature_extraction) se sert à extraire des features d'images et de textes. Nous nous concentrons sur le sous-module `sklearn.feature_extraction.text` qui permet d'établir des vecteurs de features à partir de documents textuels. Deux sous-modules ont été implémentés dans notre projet : 
 
 - `feature_extraction.text.CountVectorizer`: convertir une collection de documents textuels à une matrice de fréquence de tokens. 
 
@@ -153,7 +153,7 @@ En considérant le volume important des données, nous avons décidé de sélect
 En général, les classifieurs choisis ont eu un résultat assez bon, malgré le fait que les valeurs de F-mesure ne soient pas très satisfaisantes.
 `TfidfVectorizer` est la meilleure en tant que la méthode d'extraction des features, par rapport à `CountVectorizer`, notamment en comparant le classifieur de régression logistique (0,76 vs 0,75) et de l'arbre de décision(0,68 vs 0.67), mais l'écart reste très petit. 
 
-En ce qui concerne le classifieur, `LogisticRegression()` a eu globalement un meilleur résultat, par contre, `DecisionTreeClassifier()` n'a toujours pas eu de bon résultat que d'autres classifieurs. Par conséquent, nous concluons que **l'algorithme `LogisticRegression()` avec le feature `TfidfVectorizer`** ont eu une meilleure performance pour nos données.
+En ce qui concerne le classifieur, `LogisticRegression()` a eu globalement un meilleur résultat, par contre, `DecisionTreeClassifier()` n'a toujours pas eu de bons résultats que d'autres classifieurs. Par conséquent, nous concluons que **l'algorithme `LogisticRegression()` avec le feature `TfidfVectorizer`** ont eu une meilleure performance pour nos données.
 
 Voici les résultats en détails que nous avons obtenus :
 
@@ -258,7 +258,7 @@ weighted avg       0.67      0.67      0.67     60000
  
 
 ## Difficultés rencontrées 
-**1. Choix de tokenisation pour le corpus français**
+**1. Choix de la tokenisation pour le corpus français**
 
  Nous avons essayé d'utiliser deux librairies pour tokeniser les données français : [spaCy](https://spacy.io/) et [NLTK](https://www.nltk.org/). 
  
@@ -271,7 +271,7 @@ weighted avg       0.67      0.67      0.67     60000
     ligne = re.sub(r"aujourd' hui",r"aujourd'hui",ligne)
  ```
 
-**2. L'utilisation du `Pandas`**
+**2. Utilisation du `Pandas`**
 
   Puisque `sklearn` peut utiliser les datas sous forme de `DataFrame` et notre corpus original est sous format `csv`, notre première idée est de structurer les données et d'utiliser seulement le document `csv` à l'aide de `pandas`. 
 
