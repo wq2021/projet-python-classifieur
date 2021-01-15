@@ -1,3 +1,9 @@
+# -*- coding: utf-8 -*-
+# pour exécuter le script:
+# python testerClassifieur.py    taille_echantillon    pourcentage_test    --Stop True --lowercase True
+# exemple:
+# python testerClassifieur.py 500 0.3 --Stop True --lowercase True
+
 import os
 import re
 import numpy as np
@@ -51,10 +57,6 @@ class TesteurClf:
         report = classification_report(predicted, self.y_test)
 
         return self.clf, self.vec, report
-
-
-
-
 
 
 
