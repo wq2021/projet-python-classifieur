@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # pour exécuter le script:
-# python3 pre_traitement.py fichier.conllu form 3
+# python pre_traitement.py 20 --Stop True --ficCsv echantillon_200.csv --lowercase True
 
 import re 
 import os
@@ -15,6 +15,7 @@ import normalisation as nor
 
 # localiser le corpus, echantillon, repertoire créé
 path = f"{sys.path[0]}/../ressources"               ##########################################
+
 
 
 def echantillonner(taille, ficName="french_tweets.csv"):
@@ -60,9 +61,7 @@ def create_rep_split():
             os.makedirs(f"{path}/{partie}/{categorie}")
 
 
-
-###########################################################################################################
-def corpus_separation(csvfic, minuscule, stopwords):
+def corpus_separation(csvfic, minuscule, stopword):
     """
         mettres le contenu du fichier csv dans les répertoires, en respectant la structure demandée
         exemple train:
@@ -72,6 +71,8 @@ def corpus_separation(csvfic, minuscule, stopwords):
             -negatif
                 fic3.txt  fic4.txt ...
     """
+    lst_stopwords = nor.importer_stopwords("stopwords_fr.txt")
+
     with open(f'{path}/{csvfic}','r',encoding="utf8") as entree:
         corpus_negatif = []
         corpus_positif = []
@@ -80,12 +81,12 @@ def corpus_separation(csvfic, minuscule, stopwords):
         for ligne in entree:
             if ligne.startswith('0'):
                 phrase = ligne[2:]
-                phrase = nor.nettoyage(phrase, lower=minuscule, stopword=stopwords)
+                phrase = nor.nettoyage(phrase, lst_stopwords, lower=minuscule, stopword=stopword)
                 corpus_negatif.append(phrase)
                 
             if ligne.startswith('1'):
                 phrase = ligne[2:]
-                phrase = nor.nettoyage(phrase, lower=minuscule, stopword=stopwords)             
+                phrase = nor.nettoyage(phrase, lst_stopwords, lower=minuscule, stopword=stopword)             
                 corpus_positif.append(phrase)
         
         # transformer en nparray, pour qu'il soit plus vite
@@ -145,49 +146,30 @@ def load_datasets():
 
 
 def main():
-    # parser = argparse.ArgumentParser(description="créer des répertoires de data bien formés et normaliser le texte")
-    # parser.add_argument("taille", type=int, help="taille de l'échantillon")
-    # parser.add_argument("--ficStop", help="nom du fichier de stopwords")
-    # parser.add_argument("--ficCsv", help="nom du fichier corpus csv")
-    # parser.add_argument("--lowercase", type=bool, help="donner le True si vous voulez mettre tous les mots en minuscules")
+    parser = argparse.ArgumentParser(description="créer des répertoires de data bien formés et normaliser le texte")
+    parser.add_argument("taille", type=int, help="taille de l'échantillon")
+    parser.add_argument("--Stop", type=bool, help="booléen, choisir si on traite les stopwords ou pas")
+    parser.add_argument("--ficCsv", help="nom du fichier corpus csv")
+    parser.add_argument("--lowercase", type=bool, help="donner le True si vous voulez mettre tous les mots en minuscules")
     
-    # args = parser.parse_args()
+    args = parser.parse_args()
     
-    # size = args.taille
-    # fic_stopwords = None
-    # if args.ficStop:
-    #     fic_stopwords = args.ficStop
-    # lowercase = False
-    # if args.lowercase:
-    #     lowercase = args.lowercase
-    # fic_csv = "french_tweets.csv"
-    # if args.ficCsv:
-    #     fic_csv = args.ficCsv
-    #     print(fic_stopwords)
-    
-    # size = args.taille
-    # fic_stopwords = args.ficStop
-    # print(fic_stopwords)
-    # lowercase = args.lowercase
-    # fic_csv = "french_tweets.csv"
-    # if args.ficCsv:
-    #     fic_csv = args.ficCsv
-
-    # size = 20
-    # fic_stopwords = "stopwords_fr.txt"
-    # lowercase = True
-    # # fic_csv = "french_tweets.csv"
-    # fic_csv = "echantillon_200.csv"
+    size = args.taille
+    stopword = args.Stop
+    lowercase = args.lowercase
+    fic_csv = "french_tweets.csv"
+    if args.ficCsv:
+        fic_csv = args.ficCsv
         
 
-    # nom_csv_sample = echantillonner(size, ficName=fic_csv)
-    nom_csv_sample = echantillonner(20, ficName="echantillon_200.csv")
-    # corpus_separation(nom_csv_sample, minuscule=lowercase, stopwords=fic_stopwords)
+    nom_csv_sample = echantillonner(size, ficName=fic_csv)
+    
+    corpus_separation(nom_csv_sample, minuscule=lowercase, stopword=stopword)
     # d'autre choix possible
     # corpus_separation(nom_csv_sample, minuscule=True)
-    corpus_separation(nom_csv_sample, minuscule=True, stopwords="stopwords_fr.txt")
+    # corpus_separation(nom_csv_sample, minuscule=True, stopword=True)
 
-    # load_datasets()
+    # nom_csv_sample = echantillonner(20, ficName="echantillon_200.csv")
 
 if __name__ == "__main__":
     main()

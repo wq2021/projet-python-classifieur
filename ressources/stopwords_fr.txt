@@ -41,7 +41,7 @@ auront
 avez
 eût
 eussiez
-nous
+F
 n'
 qu'
 ou
