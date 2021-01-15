@@ -1,6 +1,6 @@
 # Documentation
 
-Auteur : Jianying Liu, Qi Wang.
+Auteurs : Jianying Liu, Qi Wang.
 
 **Cette documentation présente le projet dans le cadre du cours « Langage de script » en M2 TAL parcours Ingénierie Multilingue à l’Inalco.**
 
@@ -126,7 +126,11 @@ print("Naive Bayes : MultinomialNB()")
 print(classification_report(predicted, y_test))
 ```
 
-Au niveau des classifieurs, nous avons choisi `MultinomialNB()`(Naive Bayes), `LogisticRegression()`(Logistic Regression), `SGDClassifier()`(SVM), et `DecisionTreeClassifier()`(Decision Tree).
+Au niveau des classifieurs, nous avons choisi :
+- `MultinomialNB()`(Naive Bayes)
+- `LogisticRegression()`(Logistic Regression)
+- `SGDClassifier()`(SVM) 
+- `DecisionTreeClassifier()`(Decision Tree)
 
 ## Résultats et discussions ##
 
@@ -150,8 +154,5 @@ Au niveau des classifieurs, nous avons choisi `MultinomialNB()`(Naive Bayes), `L
     ligne = re.sub(r"aujourd' hui",r"aujourd'hui",ligne)
  ```
 
-**2. pandas**
+**2. Pandas**
 
-
-## image-test
-![testimage](images/test-img1.jpg)
