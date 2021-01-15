@@ -22,12 +22,14 @@ L'objectif de notre projet consiste à réaliser une chaîne de traitement de cl
 La classification de textes basant sur Scikit-learn peut être divisée par les étapes suivantes : 
 
 - [1. Pré-traitement de données textuels](#1-Pré-traitement-de-données-textuels)
-- [2. Génération de données d'entraînement et de tests](#2-Génération-de-données-d'entraînement-et-de-tests)
+- [2. Génération de données d'entraînement et de tests](#2-génération-de-données-d'entraînement-et-de-tests)
 - [3. Extraction des features de textes](#3-Extraction-des-features-de-textes)
 - [4. Construction et évaluation des classifieurs](#4-Construction-et-évaluation-des-classifieurs)
 
 ### 1. Pré-traitement de données textuels ###
-Les données sont stockés dans un fichier csv, chaque ligne commence par la polarité de sentiment (0 pour le sentiment négatif, 1 pour le sentiment positif), se suit par le contenu de tweet. Voici quelques lignes d'exemple pour mieux visualiser de la structure:
+Les données sont stockés dans un fichier csv, chaque ligne commence par la polarité de sentiment (0 pour le sentiment négatif, 1 pour le sentiment positif), se suit par le contenu de tweet. 
+
+Voici quelques lignes d'exemple pour mieux visualiser de la structure:
 
 ```
 0,"Noooooooooooooooooooooooooooooooooooooo! Rafa est hors de wimbledon, je suis tellement éviscéré."
@@ -127,10 +129,10 @@ print(classification_report(predicted, y_test))
 ```
 
 Au niveau des classifieurs, nous avons choisi :
-- `MultinomialNB()`(Naive Bayes)
-- `LogisticRegression()`(Logistic Regression)
-- `SGDClassifier()`(SVM) 
-- `DecisionTreeClassifier()`(Decision Tree)
+- `MultinomialNB()`: Naive Bayes
+- `LogisticRegression()` : Logistic Regression
+- `SGDClassifier()`:SVM 
+- `DecisionTreeClassifier()`: Decision Tree
 
 ## Résultats et discussions ##
 
