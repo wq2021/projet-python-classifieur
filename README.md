@@ -22,7 +22,7 @@ L'objectif de notre projet consiste à réaliser une chaîne de traitement de cl
 La classification de textes basant sur Scikit-learn peut être divisée par les étapes suivantes : 
 <! -- TOC -- >
 - [1. Pré-traitement de données textuels](#1.-Pré-traitement-de-données-textuels)
-- [2. Génération de données d'entraînement et de tests](#2. Génération de données d'entraînement et de tests)
+- [2. Génération de données d'entraînement et de tests](#2.-Génération-de données-d'entraînement-et-de-tests)
 - [3. Extraction des features de textes](#3. Extraction des features de textes)
 - [4. Construction et évaluation des classifieurs] (#4. Construction et évaluation des classifieurs)
 <! -- /TOC -- >
