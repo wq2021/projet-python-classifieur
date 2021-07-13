@@ -20,7 +20,7 @@ L'objectif de notre projet consiste à réaliser une chaîne de traitement de cl
 
 Nous avons travaillé ensemble pour la rédaction de la documentation, aussi pour la création et le test du code.
 
-La classification de textes basant sur Scikit-learn peut être divisée par les étapes suivantes :
+La classification de textes basant sur [`scikit-learn`](https://scikit-learn.org/stable/) peut être divisée par les étapes suivantes :
 
 - [1. Prétraitement des données textuelles](#1-prétraitement-des-données-textuelles)
 - [2. Génération des données d'entraînement et de test](#2-génération-des-données-dentraînement-et-de-test)
@@ -91,9 +91,11 @@ resources
     │     ├─ ...
     └─    └─ ...
 
+```
+
+
 Un échantillon de 1000 tweets générés sont également fournis dans le répertoire `output`.
 
-```
 À partir des répertoires de donnés bien séparés et établis, nous avons extrait le contenu et leur étiquette, en produisant l'output pouvant être reconnu par `scikit-learn` pour l'apprentissage: `X_train`(données de l'entraînement), `y_train`(étiquettes de l'entraînement), `X_test`(données du test), `y_test`(étiquettes du test).
 
 ```python
